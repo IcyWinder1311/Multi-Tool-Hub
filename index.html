@@ -4,154 +4,440 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi Tool Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            /* Light Theme Variables */
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --accent-color: #4361ee;
+            --accent-hover: #3a56d4;
+            --text-primary: #2b2d42;
+            --text-secondary: #6c757d;
+            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e2f;
+            --accent-color: #7b68ee;
+            --accent-hover: #6a5acd;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
-            background: #1E1E2F;
-            color: #EAEAEA;
-            text-align: center;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            min-height: 100vh;
         }
 
         .header {
-            background: #2B2D42;
-            padding: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #FFD700;
+            background-color: var(--secondary-bg);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-color), #7b68ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .theme-toggle {
+            background-color: var(--secondary-bg);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: rotate(15deg);
         }
 
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .intro-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .tools-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 900px;
-            margin: 40px auto;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .tool-card {
-            background: #3A3D5B;
-            padding: 20px;
-            border-radius: 10px;
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.8rem;
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            transition: 0.3s;
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-color), #7b68ee);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .tool-card:hover::before {
+            transform: scaleX(1);
         }
 
         .tool-card:hover {
-            background: #FFD700;
-            color: #1E1E2F;
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover-shadow);
         }
 
-        .tool-card h2 {
-            margin-bottom: 10px;
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-color), #7b68ee);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            color: white;
+            font-size: 1.8rem;
         }
 
-        .btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #FFD700;
-            color: #1E1E2F;
+        .tool-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .tool-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--accent-color);
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            text-decoration: none;
+            width: 100%;
         }
 
-        .btn:hover {
-            background: #E6C200;
+        .tool-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
         }
 
+        .tool-btn i {
+            font-size: 0.9rem;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--text-primary);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .intro-section h1 {
+                font-size: 2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tools-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    src='https://www.noupe.com/embed/019bf5aab1ee7ef1a876ab4e75e70384c7a5.js'></script>
-    <div class="header">Multi Tool Hub</div>
-    
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="fas fa-toolbox"></i>
+            </div>
+            <div class="logo-text">Multi Tool Hub</div>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
     <div class="container">
-        <div class="tool-card">
-            <h2>Image Converter</h2>
-            <p>Convert images to different formats easily.</p>
-            <a href="image-converter.html">
-            <button class="btn" onclick="goToSection('image-converter')">Go to Tool</button>
-            </a>    
+        <div class="intro-section">
+            <h1>Your All-in-One Digital Toolkit</h1>
+            <p>Access a comprehensive suite of tools for image editing, media conversion, financial calculations, and more. All tools are completely free and easy to use.</p>
         </div>
 
-        <div class="tool-card">
-            <h2>Image Compressor</h2>
-            <p>Compress images without losing quality.</p>
-            <a href="image-compressor.html">
-            <button class="btn" onclick="goToSection('image-compressor')">Go to Tool</button>
-            </a>    
+        <h2 class="category-title">Image Tools</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-file-image"></i>
+                </div>
+                <h3>Image Converter</h3>
+                <p>Convert images between JPG, PNG, WebP, and other formats with high quality preservation.</p>
+                <a href="image-converter.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-compress-alt"></i>
+                </div>
+                <h3>Image Compressor</h3>
+                <p>Reduce image file size without noticeable quality loss. Perfect for web optimization.</p>
+                <a href="image-compressor.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-crop-alt"></i>
+                </div>
+                <h3>Image Crop</h3>
+                <p>Crop images to precise dimensions with a flexible cropping tool and preset ratios.</p>
+                <a href="image-crop.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
         </div>
 
-        <div class="tool-card">
-            <h2>Image Crop</h2>
-            <p>Crop images to the desired size and dimensions.</p>
-            <a href="image-crop.html">
-            <button class="btn" onclick="goToSection('image-crop')">Go to Tool</button>
-            </a>    
+        <h2 class="category-title">Video & Audio Tools</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-file-video"></i>
+                </div>
+                <h3>Video Converter</h3>
+                <p>Convert videos between MP4, AVI, MOV, MKV, and other popular formats quickly.</p>
+                <a href="video-converter.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <h3>Audio Trim</h3>
+                <p>Trim and edit audio files to extract the exact segments you need.</p>
+                <a href="audio-trim.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
         </div>
 
-        <div class="tool-card">
-            <h2>Video Converter</h2>
-            <p>Convert videos to different formats quickly.</p>
-            <a href="video-converter.html">
-            <button class="btn" onclick="goToSection('video-converter')">Go to Tool</button>
-            </a>    
-        </div>
+        <h2 class="category-title">Financial Calculators</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3>Age Calculator</h3>
+                <p>Calculate your exact age in years, months, and days from your birth date.</p>
+                <a href="age-calculator.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
 
-        <div class="tool-card">
-            <h2>Age Calculator</h2>
-            <p>Find your exact age in years, months, and days.</p>
-            <a href="age-calculator.html">
-            <button class="btn" onclick="goToSection('age-calculator')">Go to Tool</button>
-            </a>    
-        </div>
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>EMI Calculator</h3>
+                <p>Calculate Equated Monthly Installments for loans with detailed breakdown.</p>
+                <a href="emi-calculator.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
 
-        <div class="tool-card">
-            <h2>EMI Calculator</h2>
-            <p>Calculate your loan EMIs quickly.</p>
-            <a href="emi-calculator.html">
-            <button class="btn" onclick="goToSection('emi-calculator')">Go to Tool</button>
-            </a>    
-        </div>
-
-        <div class="tool-card">
-            <h2>SIP Calculator</h2>
-            <p>Calculate your SIP returns effortlessly.</p>
-            <a href="sip-calculator.html">
-            <button class="btn" onclick="goToSection('sip-calculator')">Go to Tool</button>
-            </a>    
-        </div>
-
-        <div class="tool-card">
-            <h2>Audio Trim</h2>
-            <p>Trim audio files to your required length.</p>
-            <a href="audio-trim.html">
-            <button class="btn" onclick="goToSection('audio-trim')">Go to Tool</button>
-            </a>    
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h3>SIP Calculator</h3>
+                <p>Calculate potential returns on your Systematic Investment Plan (SIP).</p>
+                <a href="sip-calculator.html" class="tool-btn">
+                    <i class="fas fa-external-link-alt"></i> Open Tool
+                </a>
+            </div>
         </div>
     </div>
 
+    <div class="footer">
+        <p>Multi Tool Hub &copy; 2026 | All tools are free to use</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Designed with <i class="fas fa-heart" style="color: #e74c3c;"></i> for 25th anniversary of school</p>
+    </div>
+
     <script>
-        function goToSection(sectionId) {
-            alert('Redirecting to ' + sectionId + ' (Page under development)');
-            // Replace with actual navigation logic when the pages are ready
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme or prefer-color-scheme
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+        
+        // Apply the current theme
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fas fa-sun';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.className = 'fas fa-moon';
         }
+        
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Add animation to tool cards on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+        });
     </script>
 </body>
 </html>
-
-  
