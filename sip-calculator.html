@@ -3,98 +3,1534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIP Calculator</title>
+    <title>SIP Calculator - Multi Tool Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            /* Light Theme Variables */
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --accent-color: #4361ee;
+            --accent-hover: #3a56d4;
+            --text-primary: #2b2d42;
+            --text-secondary: #6c757d;
+            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --investment-color: #7209b7;
+            --returns-color: #4cc9f0;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e2f;
+            --accent-color: #7b68ee;
+            --accent-hover: #6a5acd;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --investment-color: #9d4edd;
+            --returns-color: #56cfe1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .container {
-            max-width: 400px;
-            margin: auto;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
+
+        .header {
+            background-color: var(--secondary-bg);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        button {
-            background-color: #ff9800;
-            color: white;
+
+        .logo-icon {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-color), #7b68ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
-        button:hover {
-            background-color: #e68900;
+
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
         }
-        canvas {
-            margin-top: 20px;
+
+        .theme-toggle {
+            background-color: var(--secondary-bg);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: rotate(15deg);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.8rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-color), #7b68ee);
+            border-radius: 2px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section {
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .results-section {
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--accent-color);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group label i {
+            color: var(--accent-color);
+        }
+
+        .input-with-slider {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-value {
+            min-width: 80px;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-align: right;
+            font-size: 1.1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--primary-bg);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        [data-theme="dark"] input[type="range"] {
+            background: #2a2a3a;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .input-with-unit {
+            position: relative;
+        }
+
+        .input-with-unit input {
+            width: 100%;
+            padding: 1rem;
+            padding-right: 2.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            transition: all var(--transition-speed);
+        }
+
+        [data-theme="dark"] .input-with-unit input {
+            border-color: #444;
+            background-color: #2a2a3a;
+        }
+
+        .input-with-unit input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .tenure-selector {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .tenure-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--text-secondary);
+            background: transparent;
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tenure-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .tenure-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .btn-container {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .reset-btn {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--text-secondary);
+        }
+
+        .reset-btn:hover {
+            background-color: var(--text-secondary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .maturity-amount {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--accent-color), #7b68ee);
+            border-radius: var(--border-radius);
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .maturity-amount::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .maturity-label {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .maturity-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .maturity-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-card {
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all var(--transition-speed);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .result-card {
+            background-color: #2a2a3a;
+            border-color: rgba(255,255,255,0.05);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .investment-value {
+            color: var(--investment-color);
+        }
+
+        .returns-value {
+            color: var(--returns-color);
+        }
+
+        .growth-value {
+            color: var(--success-color);
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 280px;
+            position: relative;
+        }
+
+        [data-theme="dark"] .chart-box {
+            background-color: #2a2a3a;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .projection-section {
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .projection-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .projection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .projection-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .projection-table th {
+            background-color: var(--primary-bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent-color);
+            position: sticky;
+            top: 0;
+        }
+
+        [data-theme="dark"] .projection-table th {
+            background-color: #2a2a3a;
+        }
+
+        .projection-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .projection-table td {
+            border-bottom-color: rgba(255,255,255,0.05);
+        }
+
+        .projection-table tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .download-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background-color: #3ab8dd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.error {
+            background-color: var(--warning-color);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+
+            .input-section, .results-section {
+                padding: 1.5rem;
+            }
+
+            .maturity-value {
+                font-size: 2.5rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Investment Comparison Styles */
+        .comparison-section {
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .comparison-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .comparison-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .comparison-card {
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all var(--transition-speed);
+        }
+
+        .comparison-card.best {
+            border-color: var(--success-color);
+            transform: scale(1.05);
+        }
+
+        .comparison-card h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .comparison-maturity {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 1rem 0;
+        }
+
+        .difference {
+            color: var(--success-color);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .difference.negative {
+            color: var(--warning-color);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>SIP Calculator</h2>
-        <label>Monthly Investment (₹):</label>
-        <input type="number" id="investment" placeholder="Enter Amount" required>
-        
-        <label>Expected Annual Return Rate (%):</label>
-        <input type="number" id="rate" placeholder="Enter Rate" required>
-        
-        <label>Investment Tenure (Years):</label>
-        <input type="number" id="tenure" placeholder="Enter Years" required>
-        
-        <button onclick="calculateSIP()">Calculate</button>
-        
-        <h3>Results:</h3>
-        <p>Total Investment: ₹<span id="totalInvestment">0</span></p>
-        <p>Total Returns: ₹<span id="totalReturns">0</span></p>
-        <p>Maturity Value: ₹<span id="maturityValue">0</span></p>
-        
-        <canvas id="sipChart"></canvas>
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="fas fa-toolbox"></i>
+            </div>
+            <div class="logo-text">Multi Tool Hub</div>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-title">
+            <h1>SIP Calculator</h1>
+            <p>Calculate your Systematic Investment Plan (SIP) returns with detailed projections, growth charts, and investment insights.</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">
+                    <i class="fas fa-calculator"></i>
+                    Investment Details
+                </h2>
+                
+                <div class="input-group">
+                    <label for="investment">
+                        <i class="fas fa-rupee-sign"></i> Monthly Investment
+                    </label>
+                    <div class="input-with-slider">
+                        <div class="slider-container">
+                            <input type="range" id="investmentSlider" min="500" max="100000" step="500" value="5000">
+                            <div class="slider-value" id="investmentValue">₹5,000</div>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="investment" min="500" max="100000" step="500" value="5000">
+                            <span class="unit">₹</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="rate">
+                        <i class="fas fa-chart-line"></i> Expected Annual Return
+                    </label>
+                    <div class="input-with-slider">
+                        <div class="slider-container">
+                            <input type="range" id="rateSlider" min="1" max="30" step="0.5" value="12">
+                            <div class="slider-value" id="rateValue">12%</div>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="rate" min="1" max="30" step="0.5" value="12">
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="tenure">
+                        <i class="fas fa-calendar-alt"></i> Investment Tenure
+                    </label>
+                    <div class="input-with-slider">
+                        <div class="slider-container">
+                            <input type="range" id="tenureSlider" min="1" max="30" step="1" value="10">
+                            <div class="slider-value" id="tenureValue">10 Years</div>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="tenure" min="1" max="30" step="1" value="10">
+                            <span class="unit">Years</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tenure-selector">
+                        <button class="tenure-btn" data-years="5">5 Years</button>
+                        <button class="tenure-btn active" data-years="10">10 Years</button>
+                        <button class="tenure-btn" data-years="15">15 Years</button>
+                        <button class="tenure-btn" data-years="20">20 Years</button>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="action-btn calculate-btn" onclick="calculateSIP()">
+                        <i class="fas fa-calculator"></i> Calculate SIP
+                    </button>
+                    <button class="action-btn reset-btn" onclick="resetCalculator()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Investment Results
+                </h2>
+                
+                <div class="results-display" id="resultsDisplay">
+                    <div class="maturity-amount">
+                        <div class="maturity-label">Maturity Amount</div>
+                        <div class="maturity-value" id="maturityValue">₹0</div>
+                        <div class="maturity-note">Total value at the end of investment period</div>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-value investment-value" id="totalInvestment">₹0</div>
+                            <div class="result-label">Total Investment</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-value returns-value" id="totalReturns">₹0</div>
+                            <div class="result-label">Wealth Gained</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-value growth-value" id="growthPercentage">0%</div>
+                            <div class="result-label">Return on Investment</div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <div class="chart-title">Investment vs Returns</div>
+                            <canvas id="sipChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <div class="chart-title">Yearly Growth</div>
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-section" id="comparisonSection">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale"></i>
+                Return Comparison
+            </h2>
+            <div class="comparison-cards" id="comparisonCards">
+                <!-- Comparison cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <div class="projection-section" id="projectionSection">
+            <div class="projection-header">
+                <h2 class="section-title">
+                    <i class="fas fa-table"></i>
+                    Yearly Projection
+                </h2>
+                <button class="download-btn" onclick="downloadProjection()">
+                    <i class="fas fa-download"></i> Download CSV
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table class="projection-table" id="projectionTable">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Invested</th>
+                            <th>Returns</th>
+                            <th>Total Value</th>
+                            <th>CAGR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectionBody">
+                        <!-- Table rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">SIP calculated successfully!</span>
+    </div>
+
+    <div class="footer">
+        <p>SIP Calculator &copy; 2023 | Part of Multi Tool Hub</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">This calculator provides estimates only. Actual returns may vary based on market conditions.</p>
     </div>
 
     <script>
-        function calculateSIP() {
-            let P = parseFloat(document.getElementById('investment').value);
-            let r = parseFloat(document.getElementById('rate').value) / 100 / 12;
-            let n = parseFloat(document.getElementById('tenure').value) * 12;
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        
+        // Check for saved theme or prefer-color-scheme
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+        
+        // Apply the current theme
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fas fa-sun';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.className = 'fas fa-moon';
+        }
+        
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
             
-            let FV = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
-            let totalInvestment = P * n;
-            let totalReturns = FV - totalInvestment;
+            if (currentTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            }
+            
+            // Update charts if they exist
+            updateChartsTheme();
+        });
 
-            document.getElementById('totalInvestment').innerText = totalInvestment.toFixed(2);
-            document.getElementById('totalReturns').innerText = totalReturns.toFixed(2);
-            document.getElementById('maturityValue').innerText = FV.toFixed(2);
+        // SIP Calculator Variables
+        let monthlyInvestment = 5000;
+        let annualRate = 12;
+        let tenureYears = 10;
+        let sipChart = null;
+        let growthChart = null;
 
-            drawChart(totalInvestment, totalReturns);
+        // DOM Elements
+        const investmentSlider = document.getElementById('investmentSlider');
+        const investmentInput = document.getElementById('investment');
+        const investmentValue = document.getElementById('investmentValue');
+        
+        const rateSlider = document.getElementById('rateSlider');
+        const rateInput = document.getElementById('rate');
+        const rateValue = document.getElementById('rateValue');
+        
+        const tenureSlider = document.getElementById('tenureSlider');
+        const tenureInput = document.getElementById('tenure');
+        const tenureValue = document.getElementById('tenureValue');
+        
+        const tenureButtons = document.querySelectorAll('.tenure-btn');
+        
+        const maturityValue = document.getElementById('maturityValue');
+        const totalInvestment = document.getElementById('totalInvestment');
+        const totalReturns = document.getElementById('totalReturns');
+        const growthPercentage = document.getElementById('growthPercentage');
+        
+        const projectionSection = document.getElementById('projectionSection');
+        const projectionBody = document.getElementById('projectionBody');
+        const comparisonSection = document.getElementById('comparisonSection');
+        const comparisonCards = document.getElementById('comparisonCards');
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
         }
 
-        function drawChart(investment, returns) {
-            let ctx = document.getElementById('sipChart').getContext('2d');
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Show notification
+        function showNotification(message, isError = false) {
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            
+            if (isError) {
+                notification.classList.add('error');
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+            } else {
+                notification.querySelector('i').className = 'fas fa-check-circle';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update charts theme
+        function updateChartsTheme() {
+            if (window.sipChart) {
+                window.sipChart.destroy();
+                if (window.growthChart) window.growthChart.destroy();
+                
+                // Recreate charts with current data if available
+                const maturity = parseFloat(maturityValue.textContent.replace(/[^0-9.]/g, ''));
+                if (maturity > 0) {
+                    calculateSIP(true); // Recalculate with current values
+                }
+            }
+        }
+
+        // Initialize sliders and inputs with real-time calculation
+        function initializeInputs() {
+            // Monthly Investment
+            const updateInvestment = function() {
+                monthlyInvestment = parseInt(this.value) || 0;
+                if (monthlyInvestment < 500) monthlyInvestment = 500;
+                if (monthlyInvestment > 100000) monthlyInvestment = 100000;
+                
+                investmentInput.value = monthlyInvestment;
+                investmentSlider.value = monthlyInvestment;
+                investmentValue.textContent = formatCurrency(monthlyInvestment);
+                
+                // Auto-calculate if all fields are filled
+                autoCalculateSIP();
+            };
+            
+            investmentSlider.addEventListener('input', updateInvestment);
+            investmentSlider.addEventListener('change', updateInvestment);
+            investmentInput.addEventListener('input', updateInvestment);
+            
+            // Annual Rate
+            const updateRate = function() {
+                annualRate = parseFloat(this.value) || 0;
+                if (annualRate < 1) annualRate = 1;
+                if (annualRate > 30) annualRate = 30;
+                
+                rateInput.value = annualRate;
+                rateSlider.value = annualRate;
+                rateValue.textContent = annualRate.toFixed(1) + '%';
+                
+                // Auto-calculate if all fields are filled
+                autoCalculateSIP();
+            };
+            
+            rateSlider.addEventListener('input', updateRate);
+            rateSlider.addEventListener('change', updateRate);
+            rateInput.addEventListener('input', updateRate);
+            
+            // Tenure
+            const updateTenure = function() {
+                tenureYears = parseInt(this.value) || 0;
+                if (tenureYears < 1) tenureYears = 1;
+                if (tenureYears > 30) tenureYears = 30;
+                
+                tenureInput.value = tenureYears;
+                tenureSlider.value = tenureYears;
+                updateTenureDisplay();
+                
+                // Auto-calculate if all fields are filled
+                autoCalculateSIP();
+            };
+            
+            tenureSlider.addEventListener('input', updateTenure);
+            tenureSlider.addEventListener('change', updateTenure);
+            tenureInput.addEventListener('input', updateTenure);
+            
+            // Tenure buttons
+            tenureButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    tenureButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    tenureYears = parseInt(this.getAttribute('data-years'));
+                    tenureSlider.value = tenureYears;
+                    tenureInput.value = tenureYears;
+                    updateTenureDisplay();
+                    
+                    // Auto-calculate if all fields are filled
+                    autoCalculateSIP();
+                });
+            });
+            
+            // Initialize display
+            updateTenureDisplay();
+            
+            // Calculate initial SIP
+            setTimeout(() => calculateSIP(), 500);
+        }
+
+        function updateTenureDisplay() {
+            tenureValue.textContent = tenureYears + ' Year' + (tenureYears > 1 ? 's' : '');
+        }
+
+        // Auto calculate SIP when all fields are filled
+        function autoCalculateSIP() {
+            if (monthlyInvestment > 0 && annualRate > 0 && tenureYears > 0) {
+                calculateSIP(false); // Silent calculation without notification
+            }
+        }
+
+        // Calculate SIP
+        function calculateSIP(showNotificationFlag = true) {
+            if (!monthlyInvestment || !annualRate || !tenureYears) {
+                if (showNotificationFlag) {
+                    showNotification('Please enter all investment details', true);
+                }
+                return;
+            }
+            
+            // Validate inputs
+            if (monthlyInvestment < 500 || monthlyInvestment > 100000) {
+                showNotification('Monthly investment must be between ₹500 and ₹1,00,000', true);
+                return;
+            }
+            
+            if (annualRate < 1 || annualRate > 30) {
+                showNotification('Annual return rate must be between 1% and 30%', true);
+                return;
+            }
+            
+            // Convert annual rate to monthly
+            const monthlyRate = annualRate / 12 / 100;
+            const months = tenureYears * 12;
+            
+            // SIP formula: P * ((1+r)^n - 1) / r * (1+r)
+            const futureValue = monthlyInvestment * 
+                ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * 
+                (1 + monthlyRate);
+            
+            const totalInvested = monthlyInvestment * months;
+            const wealthGained = futureValue - totalInvested;
+            const growthPercent = ((wealthGained / totalInvested) * 100).toFixed(1);
+            
+            // Update results display
+            maturityValue.textContent = formatCurrency(futureValue);
+            totalInvestment.textContent = formatCurrency(totalInvested);
+            totalReturns.textContent = formatCurrency(wealthGained);
+            growthPercentage.textContent = growthPercent + '%';
+            
+            // Create charts
+            createCharts(totalInvested, wealthGained, futureValue, tenureYears, monthlyRate);
+            
+            // Generate yearly projection
+            generateYearlyProjection(monthlyInvestment, monthlyRate, tenureYears);
+            
+            // Generate return comparison
+            generateReturnComparison(monthlyInvestment, tenureYears, futureValue);
+            
+            // Show sections
+            projectionSection.classList.add('show');
+            comparisonSection.classList.add('show');
+            
+            // Show notification
+            if (showNotificationFlag) {
+                showNotification(`SIP calculated: ${formatCurrency(futureValue)} maturity amount`);
+            }
+        }
+
+        // Create charts
+        function createCharts(investment, returns, maturity, years, monthlyRate) {
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            // Destroy existing charts if they exist
             if (window.sipChart) window.sipChart.destroy();
-            window.sipChart = new Chart(ctx, {
-                type: 'pie',
+            if (window.growthChart) window.growthChart.destroy();
+            
+            // Pie Chart for Investment vs Returns
+            const ctx1 = document.getElementById('sipChart').getContext('2d');
+            window.sipChart = new Chart(ctx1, {
+                type: 'doughnut',
                 data: {
-                    labels: ['Total Investment', 'Total Returns'],
+                    labels: ['Total Investment', 'Wealth Gained'],
                     datasets: [{
                         data: [investment, returns],
-                        backgroundColor: ['#ff9800', '#4caf50']
+                        backgroundColor: [
+                            isDarkTheme ? '#9d4edd' : '#7209b7',
+                            isDarkTheme ? '#56cfe1' : '#4cc9f0'
+                        ],
+                        borderWidth: 2,
+                        borderColor: isDarkTheme ? '#1e1e2f' : '#ffffff'
                     }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: isDarkTheme ? '#adb5bd' : '#6c757d',
+                                font: { size: 12 },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Line Chart for Yearly Growth
+            const ctx2 = document.getElementById('growthChart').getContext('2d');
+            const yearlyData = [];
+            const yearlyLabels = [];
+            let yearlyInvestment = 0;
+            let yearlyValue = 0;
+            
+            for (let year = 1; year <= years; year++) {
+                yearlyInvestment += monthlyInvestment * 12;
+                for (let month = 1; month <= 12; month++) {
+                    yearlyValue = (yearlyValue + monthlyInvestment) * (1 + monthlyRate);
+                }
+                yearlyData.push(yearlyValue);
+                yearlyLabels.push(`Year ${year}`);
+            }
+            
+            window.growthChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: yearlyLabels,
+                    datasets: [
+                        {
+                            label: 'Portfolio Value',
+                            data: yearlyData,
+                            borderColor: isDarkTheme ? '#56cfe1' : '#4cc9f0',
+                            backgroundColor: isDarkTheme ? 'rgba(86, 207, 225, 0.1)' : 'rgba(76, 201, 240, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                color: isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                color: isDarkTheme ? '#adb5bd' : '#6c757d'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                color: isDarkTheme ? '#adb5bd' : '#6c757d',
+                                callback: function(value) {
+                                    return '₹' + formatNumber(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: isDarkTheme ? '#adb5bd' : '#6c757d'
+                            }
+                        }
+                    }
                 }
             });
         }
+
+        // Generate yearly projection
+        function generateYearlyProjection(monthlyInvestment, monthlyRate, years) {
+            let projectionHTML = '';
+            let totalInvestment = 0;
+            let totalValue = 0;
+            
+            for (let year = 1; year <= years; year++) {
+                let yearlyInvestment = monthlyInvestment * 12;
+                totalInvestment += yearlyInvestment;
+                
+                // Calculate value at end of year
+                for (let month = 1; month <= 12; month++) {
+                    totalValue = (totalValue + monthlyInvestment) * (1 + monthlyRate);
+                }
+                
+                const yearlyReturns = totalValue - totalInvestment;
+                const cagr = (Math.pow(totalValue / totalInvestment, 1/year) - 1) * 100;
+                
+                projectionHTML += `
+                    <tr>
+                        <td>${year}</td>
+                        <td>${formatCurrency(totalInvestment)}</td>
+                        <td>${formatCurrency(yearlyReturns)}</td>
+                        <td>${formatCurrency(totalValue)}</td>
+                        <td>${cagr.toFixed(2)}%</td>
+                    </tr>
+                `;
+            }
+            
+            projectionBody.innerHTML = projectionHTML;
+        }
+
+        // Generate return comparison
+        function generateReturnComparison(monthlyInvestment, years, currentMaturity) {
+            const comparisons = [
+                { rate: annualRate - 2, label: 'Lower Return (-2%)' },
+                { rate: annualRate, label: 'Expected Return' },
+                { rate: annualRate + 2, label: 'Higher Return (+2%)' }
+            ];
+            
+            let comparisonHTML = '';
+            let bestMaturity = 0;
+            let bestCard = null;
+            
+            comparisons.forEach((comp, index) => {
+                const monthlyRate = comp.rate / 12 / 100;
+                const months = years * 12;
+                
+                const futureValue = monthlyInvestment * 
+                    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * 
+                    (1 + monthlyRate);
+                
+                if (futureValue > bestMaturity && comp.rate > annualRate) {
+                    bestMaturity = futureValue;
+                    bestCard = index;
+                }
+                
+                const difference = futureValue - currentMaturity;
+                const differenceText = difference > 0 ? 
+                    `+${formatCurrency(difference)} more` : 
+                    `${formatCurrency(Math.abs(difference))} less`;
+                
+                comparisonHTML += `
+                    <div class="comparison-card ${bestCard === index ? 'best' : ''}">
+                        <h3>${comp.label}</h3>
+                        <div class="comparison-maturity">${formatCurrency(futureValue)}</div>
+                        <div>${comp.rate}% Annual Return</div>
+                        <div class="difference ${difference >= 0 ? '' : 'negative'}">
+                            ${differenceText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            comparisonCards.innerHTML = comparisonHTML;
+        }
+
+        // Download projection as CSV
+        function downloadProjection() {
+            const monthlyRate = annualRate / 12 / 100;
+            const months = tenureYears * 12;
+            
+            const rows = [];
+            const headers = ['Year', 'Total Invested', 'Total Returns', 'Portfolio Value', 'CAGR'];
+            rows.push(headers.join(','));
+            
+            let totalInvestment = 0;
+            let totalValue = 0;
+            
+            for (let year = 1; year <= tenureYears; year++) {
+                totalInvestment += monthlyInvestment * 12;
+                
+                // Calculate value at end of year
+                for (let month = 1; month <= 12; month++) {
+                    totalValue = (totalValue + monthlyInvestment) * (1 + monthlyRate);
+                }
+                
+                const yearlyReturns = totalValue - totalInvestment;
+                const cagr = (Math.pow(totalValue / totalInvestment, 1/year) - 1) * 100;
+                
+                const row = [
+                    year,
+                    Math.round(totalInvestment),
+                    Math.round(yearlyReturns),
+                    Math.round(totalValue),
+                    cagr.toFixed(2)
+                ];
+                rows.push(row.join(','));
+            }
+            
+            const csvContent = rows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sip_projection_${monthlyInvestment}_${annualRate}_${tenureYears}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Yearly projection downloaded successfully!');
+        }
+
+        // Reset calculator
+        function resetCalculator() {
+            monthlyInvestment = 5000;
+            annualRate = 12;
+            tenureYears = 10;
+            
+            investmentSlider.value = monthlyInvestment;
+            investmentInput.value = monthlyInvestment;
+            investmentValue.textContent = formatCurrency(monthlyInvestment);
+            
+            rateSlider.value = annualRate;
+            rateInput.value = annualRate;
+            rateValue.textContent = annualRate.toFixed(1) + '%';
+            
+            tenureSlider.value = tenureYears;
+            tenureInput.value = tenureYears;
+            updateTenureDisplay();
+            
+            // Reset tenure buttons
+            tenureButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.tenure-btn[data-years="10"]').classList.add('active');
+            
+            // Reset results
+            maturityValue.textContent = '₹0';
+            totalInvestment.textContent = '₹0';
+            totalReturns.textContent = '₹0';
+            growthPercentage.textContent = '0%';
+            
+            // Hide sections
+            projectionSection.classList.remove('show');
+            comparisonSection.classList.remove('show');
+            
+            // Reset charts
+            if (window.sipChart) window.sipChart.destroy();
+            if (window.growthChart) window.growthChart.destroy();
+            
+            // Create empty charts
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            const ctx1 = document.getElementById('sipChart').getContext('2d');
+            window.sipChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Total Investment', 'Wealth Gained'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: [
+                            isDarkTheme ? '#9d4edd' : '#7209b7',
+                            isDarkTheme ? '#56cfe1' : '#4cc9f0'
+                        ]
+                    }]
+                }
+            });
+            
+            const ctx2 = document.getElementById('growthChart').getContext('2d');
+            window.growthChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [],
+                        borderColor: isDarkTheme ? '#56cfe1' : '#4cc9f0'
+                    }]
+                }
+            });
+            
+            showNotification('Calculator reset to default values');
+        }
+
+        // Initialize the calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeInputs();
+        });
     </script>
 </body>
 </html>
-
-  
